@@ -29,8 +29,9 @@ class Libzdb < Formula
   def install
     # Reduce linkage on macOS from `mysql-client`
     ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
-
-    system "./configure", "--disable-silent-rules", "--enable-sqliteunlock", *std_configure_args, "CC=gcc-14 CXX=g++-14"
+    ENV["CC"] = "gcc-14"
+    ENV["CXX"] = "g++-14"
+    system "./configure", "--disable-silent-rules", "--enable-sqliteunlock", *std_configure_args
     system "make", "install"
     (pkgshare/"test").install Dir["test/*.{c,cpp}"]
   end
