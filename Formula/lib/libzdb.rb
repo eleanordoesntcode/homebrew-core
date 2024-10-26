@@ -20,8 +20,7 @@ class Libzdb < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:  "eac6ae172d51fd94fc04a71798011d683d07d46f0e52b5de22968289e74fd01a"
   end
 
-  depends_on "gcc" => :build
-
+  depends_on "gcc"
   depends_on "libpq"
   depends_on macos: :high_sierra # C++ 17 is required
   depends_on "mysql-client"
@@ -31,7 +30,7 @@ class Libzdb < Formula
     # Reduce linkage on macOS from `mysql-client`
     ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
 
-    system "./configure", "--disable-silent-rules", "--enable-sqliteunlock", *std_configure_args
+    system "./configure", "--disable-silent-rules", "--enable-sqliteunlock", *std_configure_args, "CC=gcc-14 CXX=g++-14"
     system "make", "install"
     (pkgshare/"test").install Dir["test/*.{c,cpp}"]
   end
