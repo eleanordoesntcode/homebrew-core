@@ -27,7 +27,6 @@ class Libzdb < Formula
   depends_on "mysql-client"
   depends_on "sqlite"
 
-
   def install
     # Reduce linkage on macOS from `mysql-client`
     ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
