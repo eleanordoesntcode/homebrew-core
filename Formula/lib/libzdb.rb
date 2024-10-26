@@ -25,8 +25,6 @@ class Libzdb < Formula
   depends_on "mysql-client"
   depends_on "sqlite"
 
-  patch :DATA # Fix build error my mysql-client 8.3.0 https://bitbucket.org/tildeslash/libzdb/issues/67/build-error-with-mysql-83
-
   def install
     # Reduce linkage on macOS from `mysql-client`
     ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
@@ -44,22 +42,3 @@ class Libzdb < Formula
     end
   end
 end
-
-__END__
-diff --git a/src/db/mysql/MysqlConnection.c b/src/db/mysql/MysqlConnection.c
-index 45ae896..7b6c1e3 100644
---- a/src/db/mysql/MysqlConnection.c
-+++ b/src/db/mysql/MysqlConnection.c
-@@ -96,8 +96,10 @@ static MYSQL *_doConnect(Connection_T delegator, char **error) {
-         // Options
-         if (IS(URL_getParameter(url, "compress"), "true"))
-                 clientFlags |= CLIENT_COMPRESS;
--        if (IS(URL_getParameter(url, "use-ssl"), "true"))
--                mysql_ssl_set(db, 0,0,0,0,0);
-+        if (IS(URL_getParameter(url, "use-ssl"), "true")) {
-+                enum mysql_ssl_mode ssl_mode = SSL_MODE_REQUIRED;
-+                mysql_options(db, MYSQL_OPT_SSL_MODE, &ssl_mode);
-+        }
- #if MYSQL_VERSION_ID < 80000
-         if (IS(URL_getParameter(url, "secure-auth"), "true"))
-                 mysql_options(db, MYSQL_SECURE_AUTH, (const char*)&yes);
