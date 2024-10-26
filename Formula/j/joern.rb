@@ -25,8 +25,9 @@ class Joern < Formula
   depends_on "sbt" => :build
   depends_on "astgen"
   depends_on "coreutils"
-  depends_on "openjdk"
+  depends_on "openjdk@21"
   depends_on "php"
+  depends_on "scala"
 
   def install
     system "sbt", "stage"
