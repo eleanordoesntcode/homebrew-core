@@ -39,8 +39,6 @@ class Intercal < Formula
   uses_from_macos "bison" => :build
   uses_from_macos "flex" => :build
 
-  patch :DATA
-
   def install
     if build.head?
       cd "buildaux" do
@@ -49,6 +47,7 @@ class Intercal < Formula
     end
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
+    patch :DATA
     system "make", "install"
     (etc/"intercal").install Dir["etc/*"]
     pkgshare.install "pit"
