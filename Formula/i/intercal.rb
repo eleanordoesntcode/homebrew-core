@@ -40,7 +40,7 @@ class Intercal < Formula
   uses_from_macos "flex" => :build
 
   patch :DATA
-  
+
   def install
     if build.head?
       cd "buildaux" do
