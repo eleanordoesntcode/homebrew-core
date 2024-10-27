@@ -31,6 +31,7 @@ class Libzdb < Formula
     ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
     ENV["CC"] = "gcc-14"
     ENV["CXX"] = "g++-14"
+    ENV.append_to_cflags "-I/opt/homebrew/include"
     system "./configure", "--disable-silent-rules", "--enable-sqliteunlock", *std_configure_args
     system "make", "install"
     (pkgshare/"test").install Dir["test/*.{c,cpp}"]
