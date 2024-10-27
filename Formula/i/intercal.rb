@@ -39,6 +39,8 @@ class Intercal < Formula
   uses_from_macos "bison" => :build
   uses_from_macos "flex" => :build
 
+  patch :DATA
+  
   def install
     if build.head?
       cd "buildaux" do
@@ -62,3 +64,17 @@ class Intercal < Formula
     end
   end
 end
+
+__END__
+--- Makefile	2024-10-27 14:28:56
++++ Makefile2	2024-10-27 14:32:43
+@@ -459,8 +459,7 @@
+ AM_CFLAGS = '-DICKINCLUDEDIR="$(ickincludedir)"' \
+             '-DICKDATADIR="$(ickdatadir)"' \
+             '-DICKBINDIR="$(bindir)"' '-DICKLIBDIR="$(libdir)"' \
+-            -DYYDEBUG -DICK_HAVE_STDINT_H=1 \
+-	    -fno-toplevel-reorder
++            -DYYDEBUG -DICK_HAVE_STDINT_H=1
+ 
+ AM_CPPFLAGS = -I$(srcdir)/src
+ ick_SOURCES = src/feh2.c src/dekludge.c src/ick_lose.c \
