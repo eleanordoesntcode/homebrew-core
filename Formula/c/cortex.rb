@@ -19,7 +19,8 @@ class Cortex < Formula
     sha256 cellar: :any_skip_relocation, monterey:       "e2e5d3b16a11e0eb04bbcccb0f942504147deb017f2dec1ca9758a1af5dece19"
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "99864ad36ccb938578f8ebfcf0023008f7c436d5865e9b99ca69c18383b79334"
   end
-
+  
+  depends_on "cmake" => :build
   depends_on "go" => :build
 
   conflicts_with "cortexso", because: "both install `cortex` binaries"
