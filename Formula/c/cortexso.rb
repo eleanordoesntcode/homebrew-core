@@ -1,8 +1,8 @@
 class Cortexso < Formula
   desc "Drop-in, local AI alternative to the OpenAI stack"
   homepage "https://jan.ai/cortex"
-  url "https://registry.npmjs.org/cortexso/-/cortexso-0.1.1.tgz"
-  sha256 "48efc16761eebfdd60e50211049554e7b781b30e56461042c6bf100e84d8d244"
+  url "https://registry.npmjs.org/cortexso/-/cortexso-0.1.18.tgz"
+  sha256 "3fbed00c0f20d88c8f33050ba7cab7c2beafebc0d78bac865ec90d6a77fd057b"
   license "Apache-2.0"
   head "https://github.com/janhq/cortex.git", branch: "dev"
 
@@ -19,6 +19,7 @@ class Cortexso < Formula
   end
 
   depends_on "node"
+  depends_on "cmake"
 
   on_linux do
     # Workaround for old `node-gyp` that needs distutils.
