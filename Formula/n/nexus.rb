@@ -1,8 +1,8 @@
 class Nexus < Formula
   desc "Repository manager for binary software components"
-  homepage "https://www.sonatype.org/"
-  url "https://github.com/sonatype/nexus-public/archive/refs/tags/release-3.38.1-01.tar.gz"
-  sha256 "83b3a39e4d350d9786ce47410607fdd9ec04fca4f8451c0a763d8e22c5639e87"
+  homepage "https://www.sonatype.com/"
+  url "https://github.com/sonatype/nexus-public/archive/refs/tags/release-3.74.0-05.tar.gz"
+  sha256 "467d5190f8211ebed049f780f0b7c2130e948e1ba6e27098691e557c3d340527"
   license "EPL-1.0"
 
   # As of writing, upstream is publishing both v2 and v3 releases. The "latest"
@@ -27,6 +27,10 @@ class Nexus < Formula
   depends_on "openjdk@8"
 
   uses_from_macos "unzip" => :build
+
+  # Fix to the dependency version not on the maven central
+  # remove on next release
+  patch :DATA
 
   def install
     ENV["JAVA_HOME"] = Formula["openjdk@8"].opt_prefix
@@ -67,3 +71,18 @@ class Nexus < Formula
     assert_match "<title>Nexus Repository Manager</title>", shell_output("curl --silent --fail http://localhost:8081")
   end
 end
+
+__END__
+diff --git a/pom.xml b/pom.xml
+index 90a6716838..7f8425053b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -604,7 +604,7 @@
+             <dependency>
+               <groupId>org.codehaus.groovy</groupId>
+               <artifactId>groovy-eclipse-batch</artifactId>
+-              <version>3.0.13-02</version>
++              <version>3.0.8-01</version>
+             </dependency>
+           </dependencies>
+           <configuration>
