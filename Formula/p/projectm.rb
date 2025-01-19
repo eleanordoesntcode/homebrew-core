@@ -43,15 +43,22 @@ class Projectm < Formula
       system "cmake", "--install", "build"
     end
 
-    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_INSTALL_RPATH=#{rpath}", *std_cmake_args
+    system "cmake", "-S", ".", "-B", "build",
+                               "-DCMAKE_INSTALL_RPATH=#{rpath}",
+                               "-DBUILD_SHARED_LIBS=ON",
+                               *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
+
+    # remove openGL requirement because that doesn't work on macOS or our linux install
+    inreplace lib/"pkgconfig/projectM-4.pc", "Requires: opengl", ""
+
+    # fix library naming
+    inreplace lib/"pkgconfig/projectM-4.pc", "-l:projectM", "-lprojectM"
+    inreplace lib/"pkgconfig/projectM-4-playlist.pc", "-l:projectM", "-lprojectM"
   end
 
   test do
-    assert_predicate lib/"libprojectM-4.so", :exist? if OS.linux?
-    assert_predicate lib/"libprojectM-4.dylib", :exist? if OS.mac?
-
     (testpath/"test.c").write <<~C
       #include <SDL2/SDL.h>
 
@@ -97,8 +104,17 @@ class Projectm < Formula
           return 0;
       }
     C
-    flags = shell_output("pkgconf --cflags --libs projectM-4 sdl2").chomp.split
-    system ENV.cc, "test.c", "-o", "test", *flags
+
+    assert_match version.to_s, shell_output("pkgconf --modversion projectM-4")
+
+    opengl_flags = if OS.mac?
+      ["-Wl,-framework,OpenGL"]
+    else
+      ["-L#{Formula["mesa"].opt_lib}", "-lGL"]
+    end
+
+    flags = shell_output("pkgconf --cflags --libs sdl2 projectM-4").chomp.split
+    system ENV.cc, "test.c", "-o", "test", *flags, *opengl_flags
 
     # Fails in Linux CI with "Video init failed: No available video device"
     return if OS.linux? && ENV["HOMEBREW_GITHUB_ACTIONS"]
