@@ -18,12 +18,18 @@ class MathComp < Formula
   depends_on "ocaml" => :build
   depends_on "ocaml-findlib" => :build
   depends_on "coq"
+  depends_on "opam"
 
   def install
     # Work around for https://github.com/Homebrew/homebrew-test-bot/issues/805
     if ENV["HOMEBREW_GITHUB_ACTIONS"] && !(Formula["ocaml-findlib"].etc/"findlib.conf").exist?
       ENV["OCAMLFIND_CONF"] = Formula["ocaml-findlib"].opt_libexec/"findlib.conf"
     end
+
+    # Installing hierarchy-builder, required by the program
+    # Instructions taken from https://github.com/math-comp/hierarchy-builder
+    system "opam", "repo", "add", "coq-released", "https://coq.inria.fr/opam/released"
+    system "opam", "install", "coq-hierarchy-builder"
 
     coqlib = "#{lib}/coq/"
 
